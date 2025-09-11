@@ -1,0 +1,4 @@
+# each line = 1-based IDs of Ki (K0 down to Km)
+1 2 3 4
+1 3
+1

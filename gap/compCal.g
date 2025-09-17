@@ -63,8 +63,8 @@ od;
 
 # === absolute file paths (edit these to match your system!) ===
 # === absolute file paths (edit these to match your system!) ===
-compFile := "C:/Users/krish/Downloads/advanced algorithm/thesis/gap/comp_series.txt";
-layerFile := "C:/Users/krish/Downloads/advanced algorithm/thesis/gap/layers.csv";
+compFile := "C:/Users/krish/Downloads/advanced algorithm/compact_DS_solvableGroup/gap/comp_series.txt";
+layerFile := "C:/Users/krish/Downloads/advanced algorithm/compact_DS_solvableGroup/gap/layers.csv";
 
 PrintTo(compFile, "# each line = 1-based IDs of Ki (K0 down to Km)\n");
 for ids in chainIds do

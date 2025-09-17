@@ -256,8 +256,8 @@ vector<vector<int>> mt  = {
 Group G(4,mt);
 
 // load chain/layers from GAP
-auto chain = read_chain("C:/Users/krish/Downloads/advanced algorithm/thesis/gap/comp_series.txt", G.n);
-auto infos = read_layers("C:/Users/krish/Downloads/advanced algorithm/thesis/gap/layers.csv", G.n);
+auto chain = read_chain("C:/Users/krish/Downloads/advanced algorithm/compact_DS_solvableGroup/gap/comp_series.txt", G.n);
+auto infos = read_layers("C:/Users/krish/Downloads/advanced algorithm/compact_DS_solvableGroup/gap/layers.csv", G.n);
 
 
 // build DS

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # extractGroupInfo.g  —  Stage 1: GAP file for composition series analysis and cayley table analysis
+=======
+# extractGroupInfo.g  —  Stage 1: GAP algebraic analysis
+>>>>>>> 6af4dcabb7a806ea2dd54a14a417d2455c9e6033
 
 # HOW TO CALL
 #   gap -q -b -c 'GROUP_EXPR:="SmallGroup(96,227)";' extractGroupInfo.g
@@ -7,9 +11,15 @@
 #   cayley_readable.txt   — human-readable tables, useful for debugging
 #   cayley_parseable.txt  — machine-readable format read by preparedsa.cpp
 #   group_order.txt       — single integer |G|, used by run_all.sh to bound
+<<<<<<< HEAD
 #                           number of random elements for structure_generator.c file
 
 #   I convert the polycyclic group to a permutation group via
+=======
+#                           random element indices for structure_generator
+
+#   I always convert the polycyclic group to a permutation group via
+>>>>>>> 6af4dcabb7a806ea2dd54a14a417d2455c9e6033
 #   IsomorphismPermGroup before doing anything. These permutation groups have a canonical
 #   element ordering that GAP reproduces identically across all sessions. 
 
@@ -21,6 +31,12 @@
 # =============================================================================
 
 
+<<<<<<< HEAD
+=======
+t0 := Runtime();  #this track time taken by gap program
+
+
+>>>>>>> 6af4dcabb7a806ea2dd54a14a417d2455c9e6033
 #This function computes the Cayley table of subgroup H ( in global G-indices)
 #els_global0: it translates each H-element from its local position in H to its 0-based position in G.
 
@@ -29,7 +45,10 @@ CayleyTableFor := function(H, G, readablePath, parsePath)
           globalEls, els_global0,
           fHuman, fParse;
 
+<<<<<<< HEAD
     #all elements of H, where each element is a permutation
+=======
+>>>>>>> 6af4dcabb7a806ea2dd54a14a417d2455c9e6033
     els  := Elements(H);
     n    := Length(els);
 
@@ -39,7 +58,11 @@ CayleyTableFor := function(H, G, readablePath, parsePath)
     globalEls := Elements(G);
 
 
+<<<<<<< HEAD
     #It converts from GAP's local 1-based to our global0-based ordering
+=======
+    #It converts from GAP's 1-based to our 0-based ordering
+>>>>>>> 6af4dcabb7a806ea2dd54a14a417d2455c9e6033
     els_global0 := List(els,
         e -> PositionCanonical(globalEls, e) - 1);
 
@@ -90,6 +113,33 @@ CayleyTableFor := function(H, G, readablePath, parsePath)
     CloseStream(fParse);
 end;
 
+<<<<<<< HEAD
+=======
+# =============================================================================
+# It finds the composition series index where |cs[i]| first drops below sqrt(|G|)/2. This is the same boundary
+# that checkSub3 in preparedsa.cpp uses to decide Case 1 vs Case 2.
+# The condition "4 * |cs[i]|^2 < |G|" is equivalent to "|cs[i]| < sqrt(|G|)/2".
+# I keep this here for sanity checks when something goes wrong with case selection.
+# =============================================================================
+FindSqrtHalfOrderSubgroup := function(cs, G)
+    local Gsize, i;
+    Gsize := Size(cs[1]);
+    for i in [1..Length(cs)] do
+        if 4 * Size(cs[i])^2 < Gsize then
+            return i;
+        fi;
+    od;
+    return fail;
+end;
+
+# File helpers
+appendTextToFile := function(filename, text)
+    local f;
+    f := OutputTextFile(filename, true);
+    WriteAll(f, text);
+    CloseStream(f);
+end;
+>>>>>>> 6af4dcabb7a806ea2dd54a14a417d2455c9e6033
 
 # This clears the file before writing.
 clearFile := function(filename)
@@ -99,12 +149,20 @@ clearFile := function(filename)
 end;
 
 
+<<<<<<< HEAD
 # ---- Main Part ----
+=======
+# ---- Main ----
+>>>>>>> 6af4dcabb7a806ea2dd54a14a417d2455c9e6033
 
 readablePath := "cayley_readable.txt";
 parsePath    := "cayley_parseable.txt";
 
+<<<<<<< HEAD
 # IT always clear before writing so data from previous group run clear and don't produce wrong data.
+=======
+# Always clear before writing so data from previous group run clear and dont produce wrong data.
+>>>>>>> 6af4dcabb7a806ea2dd54a14a417d2455c9e6033
 clearFile(readablePath);
 clearFile(parsePath);
 
@@ -141,5 +199,11 @@ Print("Appended all subgroups to:\n");
 Print("  readable : ", readablePath, "\n");
 Print("  parseable: ", parsePath,    "\n");
 
+<<<<<<< HEAD
 Print("Ended", "\n");
 
+=======
+program end time
+t1 := Runtime(); 
+Print("Time taken (ms): ", t1 - t0, "\n");
+>>>>>>> 6af4dcabb7a806ea2dd54a14a417d2455c9e6033

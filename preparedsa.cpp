@@ -7,7 +7,11 @@
 //   construction case applies (Theorem 3 alone, or Theorem 4 nested inside
 //   Theorem 3). Based on that it builds all the auxiliary lookup tables, and writes them to
 //   precomputed.bin (binary) and precomputed.txt (human-readable text).
+<<<<<<< HEAD
 // 
+=======
+//
+>>>>>>> 6af4dcabb7a806ea2dd54a14a417d2455c9e6033
 
 // COMPILE
 //   g++ -O3 -o preparedsa preparedsa.cpp
@@ -143,9 +147,13 @@ void write_text_mat(ostream &out, const string &tag, const vector<vector<int>> &
 pair<int,int> checkSub3(vector<Subgroup>& groups) {
     double rootG     = sqrt((double)groups[0].order);
     int upperBound   = (int)floor(rootG);       // floor(sqrt(n))
+<<<<<<< HEAD
     cout << "# order - " << upperBound << " # \n" ; 
     int lowerBound   = (int)ceil(rootG / 2.0);  // ceil(sqrt(n)/2)
     cout << "# order - " << lowerBound << " # \n" ;
+=======
+    int lowerBound   = (int)ceil(rootG / 2.0);  // ceil(sqrt(n)/2)
+>>>>>>> 6af4dcabb7a806ea2dd54a14a417d2455c9e6033
     int largestAbove = -1;  // tracks the last index still above sqrt(n)
 
     for (int i = 1; i < (int)groups.size(); i++) {
@@ -153,10 +161,14 @@ pair<int,int> checkSub3(vector<Subgroup>& groups) {
 
         // This subgroup lands exactly in the sweet spot — Case 1.
         if (ord <= upperBound && ord >= lowerBound)
+<<<<<<< HEAD
             {   cout << "# order - " << ord << " # \n" ;
                 return {i, -1}; 
 
         }
+=======
+            return {i, -1};
+>>>>>>> 6af4dcabb7a806ea2dd54a14a417d2455c9e6033
 
         if (ord > upperBound)
             largestAbove = i;
@@ -178,7 +190,11 @@ pair<int,int> checkSub3(vector<Subgroup>& groups) {
 // ---------------------------------------------------------------------------
 CosetReps coset_representative_cal(Subgroup& G, Subgroup& H, int n) {
     const vector<vector<int>>& tableG = G.table;
+<<<<<<< HEAD
     vector<int> elementsH = H.table[0];  // global IDs With respect to G of H's elements
+=======
+    vector<int> elementsH = H.table[0];  // global IDs of H's elements
+>>>>>>> 6af4dcabb7a806ea2dd54a14a417d2455c9e6033
 
     vector<int> seenL(G.order, 0), seenR(G.order, 0);
     CosetReps reps;
@@ -439,7 +455,10 @@ void build_HH(
     vector<vector<int>>& HH
 ) {
     int m = H_elems.size();
+<<<<<<< HEAD
     cout << "# order... - " << m << " # \n" ;
+=======
+>>>>>>> 6af4dcabb7a806ea2dd54a14a417d2455c9e6033
     HH.assign(m, vector<int>(m, -1));
     for (int i = 0; i < m; i++) {
         int hgi = H_elems[i];
@@ -511,6 +530,7 @@ bool build_e_sR_sL(
     const vector<int>& N_elems, int k,
     const vector<int>& inv,
     vector<int>& e, vector<int>& sR, vector<int>& sL,
+<<<<<<< HEAD
     vector<int>& gid_to_nidx, vector<int>& g0pow,
     const vector<int>& gid_to_Giidx, int orderGi   // NEW
 ) {
@@ -530,6 +550,27 @@ for (int i = 0; i < k; ++i) {
     }
 }
 return true;
+=======
+    vector<int>& gid_to_nidx, vector<int>& g0pow
+) {
+    int n = G_table.size();
+    e.assign(n, -1); sR.assign(n, -1); sL.assign(n, -1);
+
+    for (int i = 0; i < k; ++i) {
+        int g0i = g0pow[i];
+        for (int ni = 0; ni < (int)N_elems.size(); ni++) {
+            int n_gid  = N_elems[ni];
+            int g      = G_table[g0i][n_gid];   // g = g0^i * n
+            e[g]       = i;
+            sR[g]      = ni;
+            // left N-component: n' = g * g0^{-i}
+            int inv_g0i    = inv[g0i];
+            int nprime_gid = G_table[g][inv_g0i];
+            sL[g]          = gid_to_nidx[nprime_gid];
+        }
+    }
+    return true;
+>>>>>>> 6af4dcabb7a806ea2dd54a14a417d2455c9e6033
 }
 
 // build_Flip: for each (n, i), compute n * g0^i gave in N * g0^j form.
@@ -590,8 +631,12 @@ void build_rede_redN(
 vector<vector<int>> build_Fuse(
     const vector<vector<int>>& G_table,
     const vector<int>& g0pow_k,
+<<<<<<< HEAD
     const vector<int>& N_elems,
     const vector<int>& gid_to_Giidx   
+=======
+    const vector<int>& N_elems
+>>>>>>> 6af4dcabb7a806ea2dd54a14a417d2455c9e6033
 ) {
     int k = g0pow_k.size();
     int m = N_elems.size();
@@ -599,7 +644,11 @@ vector<vector<int>> build_Fuse(
     for (int i = 0; i < k; i++) {
         int g0i = g0pow_k[i];
         for (int ni = 0; ni < m; ni++)
+<<<<<<< HEAD
             Fuse[i][ni] = gid_to_Giidx[ G_table[g0i][N_elems[ni]] ];   // local Gi-index
+=======
+            Fuse[i][ni] = G_table[g0i][N_elems[ni]];
+>>>>>>> 6af4dcabb7a806ea2dd54a14a417d2455c9e6033
     }
     return Fuse;
 }
@@ -633,14 +682,23 @@ void write_theorem3_data(
     const vector<int>& inverse,
     bool writeHH = true
 ) {
+<<<<<<< HEAD
     
+=======
+    write_bin_block(bout, "subgroupH", subgroupH);
+    write_bin_block(bout, "repsL",     reps.left);
+    write_bin_block(bout, "repsR",     reps.right);
+>>>>>>> 6af4dcabb7a806ea2dd54a14a417d2455c9e6033
     write_bin_block(bout, "cL",        cL);
     write_bin_block(bout, "sL",        sL);
     write_bin_block(bout, "cR",        cR);
     write_bin_block(bout, "sR",        sR);
     if (writeHH)
         write_bin_mat(bout, "HH_mat",  HH);
+<<<<<<< HEAD
         cout << "# order - " << HH.size() << " # \n" ;
+=======
+>>>>>>> 6af4dcabb7a806ea2dd54a14a417d2455c9e6033
     write_bin_mat  (bout, "flipH_mat", flipH);
     write_bin_mat  (bout, "flipR_mat", flipR);
     write_bin_mat  (bout, "crossH_mat",crossH);
@@ -649,13 +707,22 @@ void write_theorem3_data(
     write_bin_block(bout, "inverse",   inverse);
 
     tout << "# theorem3 data\n";
+<<<<<<< HEAD
+=======
+    write_text_block(tout, "subgroupH", subgroupH);
+    write_text_block(tout, "repsL",     reps.left);
+    write_text_block(tout, "repsR",     reps.right);
+>>>>>>> 6af4dcabb7a806ea2dd54a14a417d2455c9e6033
     write_text_block(tout, "cL",  cL);
     write_text_block(tout, "sL",  sL);
     write_text_block(tout, "cR",  cR);
     write_text_block(tout, "sR",  sR);
     if (writeHH)
         write_text_mat(tout, "HH_mat",  HH);
+<<<<<<< HEAD
         cout << "# order - " << HH.size() << " # \n" ;
+=======
+>>>>>>> 6af4dcabb7a806ea2dd54a14a417d2455c9e6033
     write_text_mat  (tout, "flipH_mat", flipH);
     write_text_mat  (tout, "flipR_mat", flipR);
     write_text_mat  (tout, "crossH_mat",crossH);
@@ -673,6 +740,12 @@ void write_theorem4_data(
     const vector<vector<int>>& fuse,
     const vector<int>& inverse
 ) {
+<<<<<<< HEAD
+=======
+    write_bin_block(bout, "N_elems",    N_elems);
+    write_bin_block(bout, "g0pow_k",    g0pow_k);
+    write_bin_block(bout, "g0pow_full", g0pow_full);
+>>>>>>> 6af4dcabb7a806ea2dd54a14a417d2455c9e6033
     write_bin_block(bout, "e_arr",      e);      // PRESENCE of "e_arr" signals Mode 5 to querycds
     write_bin_block(bout, "sR_arr",     sR);
     write_bin_block(bout, "sL_arr",     sL);
@@ -684,6 +757,12 @@ void write_theorem4_data(
     write_bin_block(bout, "inverse",    inverse);
 
     tout << "# theorem4 data\n";
+<<<<<<< HEAD
+=======
+    write_text_block(tout, "N_elems",    N_elems);
+    write_text_block(tout, "g0pow_k",    g0pow_k);
+    write_text_block(tout, "g0pow_full", g0pow_full);
+>>>>>>> 6af4dcabb7a806ea2dd54a14a417d2455c9e6033
     write_text_block(tout, "e_arr",      e);
     write_text_block(tout, "sR_arr",     sR);
     write_text_block(tout, "sL_arr",     sL);
@@ -828,11 +907,14 @@ int main() {
                 gid_to_nid[N_elems[i]] = i;
             }
 
+<<<<<<< HEAD
             // NEW: map global G-index -> local Gi-index (for T4 boundary arrays)
 vector<int> gid_to_Giidx(orderG, -1);
 for (int i = 0; i < (int)Gisub.table[0].size(); i++)
     gid_to_Giidx[ Gisub.table[0][i] ] = i;
 
+=======
+>>>>>>> 6af4dcabb7a806ea2dd54a14a417d2455c9e6033
             // Find a generator g0 of the cyclic group Gi/N.
             int g0 = -1;
             for (int i = 0; i < orderGi; i++) {
@@ -864,8 +946,12 @@ for (int i = 0; i < (int)Gisub.table[0].size(); i++)
             // Step A: build all Theorem 4 tables for the inner pair (Gi, N).
             vector<int> e_arr, sR_arr, sL_arr;
             build_e_sR_sL(G.table, N_elems, k, inverse,
+<<<<<<< HEAD
               e_arr, sR_arr, sL_arr, gid_to_nid, g0pow_k,
               gid_to_Giidx, orderGi);   // NEW args
+=======
+                          e_arr, sR_arr, sL_arr, gid_to_nid, g0pow_k);
+>>>>>>> 6af4dcabb7a806ea2dd54a14a417d2455c9e6033
 
             vector<vector<int>> NN;
             build_HH(N_elems, G.table, gid_to_nid, NN);
@@ -876,7 +962,11 @@ for (int i = 0; i < (int)Gisub.table[0].size(); i++)
             vector<int> rede, redN_idx;
             build_rede_redN(G.table, g0pow, g0pow_k, inverse, gid_to_nid, rede, redN_idx);
 
+<<<<<<< HEAD
            vector<vector<int>> fuse_t4 = build_Fuse(G.table, g0pow_k, N_elems, gid_to_Giidx);
+=======
+            vector<vector<int>> fuse_t4 = build_Fuse(G.table, g0pow_k, N_elems);
+>>>>>>> 6af4dcabb7a806ea2dd54a14a417d2455c9e6033
 
             // Write T4 data FIRST — querycds uses "e_arr" presence to detect Mode 5.
             write_theorem4_data(bout, tout,

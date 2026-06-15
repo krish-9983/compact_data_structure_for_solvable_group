@@ -91,7 +91,11 @@ def write_header(ws, title):
 
 def make_plot1(cpp, gap, out_path):
     L_fixed = int(cpp['L'].min())
+<<<<<<< HEAD
     n_seeds = cpp.groupby('Group')['Seed'].nunique().max()
+=======
+    n_seeds = cpp['Seed'].nunique()
+>>>>>>> 6af4dcabb7a806ea2dd54a14a417d2455c9e6033
 
     cpp1 = cpp[cpp['L'] == L_fixed]
     gap1 = gap[gap['L'] == L_fixed]
@@ -233,7 +237,11 @@ def make_plot3(cpp, gap, out_path):
     df['Family']        = df['Group'].apply(family)
 
     n_Ls   = cpp['L'].nunique()
+<<<<<<< HEAD
     n_seed = cpp.groupby('Group')['Seed'].nunique().max()
+=======
+    n_seed = cpp['Seed'].nunique()
+>>>>>>> 6af4dcabb7a806ea2dd54a14a417d2455c9e6033
     L_min  = int(cpp['L'].min())
     L_max  = int(cpp['L'].max())
     df['L sizes averaged'] = n_Ls
@@ -288,7 +296,11 @@ def main():
     print(f"  CDS rows: {len(cpp)},  GAP rows: {len(gap)}")
     print(f"  Groups: {cpp['Group'].nunique()},  "
           f"L values: {cpp['L'].nunique()},  "
+<<<<<<< HEAD
           f"Seeds per group: {cpp.groupby('Group')['Seed'].nunique().max()}\n")
+=======
+          f"Seeds: {cpp['Seed'].nunique()}\n")
+>>>>>>> 6af4dcabb7a806ea2dd54a14a417d2455c9e6033
 
     print("Generating Excel files...")
     make_plot1(cpp, gap, f"{args.out}_plot1_FixedL.xlsx")

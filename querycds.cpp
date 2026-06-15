@@ -25,6 +25,11 @@
 //
 //   Mode 5 — Theorem 4 nested inside Theorem 3 (Case 2)
 //     29 array lookups per multiply (9 outer + 2x10 inner T4 calls)
+<<<<<<< HEAD
+=======
+//
+//   Mode 4 — Standalone Theorem 4 (rarely used, kept for completeness)
+>>>>>>> 6af4dcabb7a806ea2dd54a14a417d2455c9e6033
 // =============================================================================
 
 #include <iostream>
@@ -76,9 +81,16 @@ static Block read_block(ifstream &in) {
 // =============================================================================
 int detect_mode(const unordered_map<string, Block>& B) {
     bool hasT4 = B.count("e_arr") && B.count("Flip_mat") && B.count("rede_arr");
+<<<<<<< HEAD
 
     if (hasT4) return 5;
     else return 3;
+=======
+    bool hasT3 = B.count("cL")    && B.count("cR")       && B.count("flipH_mat");
+    if (hasT4 && hasT3) return 5;
+    if (hasT4)          return 4;
+    if (hasT3)          return 3;
+>>>>>>> 6af4dcabb7a806ea2dd54a14a417d2455c9e6033
     return -1;
 }
 
@@ -125,10 +137,16 @@ inline int multiply_theorem3(int g1, int g2, const Theorem3Data& T) {
     return T.fuse->data[h4 * T.fuse->cols + r3];
 }
 
+<<<<<<< HEAD
 // multiply_theorem4
 // g1, g2 are LOCAL Gi-indices; returns a LOCAL Gi-index.
 // (In Mode 5 these are the inner-subgroup local indices supplied by T3's
 //  decomposition. In standalone Mode 4 they are whole-group indices — see note.)
+=======
+// =============================================================================
+// multiply_theorem4
+// =============================================================================
+>>>>>>> 6af4dcabb7a806ea2dd54a14a417d2455c9e6033
 inline int multiply_theorem4(int g1, int g2, const Theorem4Data& T) {
     int alpha = T.e_arr->data[g1],  beta  = T.e_arr->data[g2];
     int sR_g1 = T.sR_arr->data[g1], sL_g2 = T.sL_arr->data[g2];
@@ -150,6 +168,7 @@ inline int multiply_theorem4(int g1, int g2, const Theorem4Data& T) {
 // =============================================================================
 inline int multiply_combined(int g1, int g2,
                               const Theorem3Data& T3,
+<<<<<<< HEAD
                               const Theorem4Data& T4) {
     int cl1 = T3.cL->data[g1], sl1 = T3.sL->data[g1];
     int sl2 = T3.sR->data[g2], r2  = T3.cR->data[g2];
@@ -157,6 +176,20 @@ inline int multiply_combined(int g1, int g2,
     // Step 2: inner multiply sl1 * sl2 via T4.
     // sl1, sl2 are local Gi-indices; T4 now consumes and returns local Gi-indices.
     int h1 = multiply_theorem4(sl1, sl2, T4);
+=======
+                              const Theorem4Data& T4,
+                              const vector<int>& subgroupH) {
+    int cl1 = T3.cL->data[g1], sl1 = T3.sL->data[g1];
+    int sl2 = T3.sR->data[g2], r2  = T3.cR->data[g2];
+
+    // Step 2 replacement: inner multiply sl1 * sl2 via T4.
+    // sl1 and sl2 are local H-indices; T4 needs global G-indices.
+    int h_global_1 = subgroupH[sl1];
+    int h_global_2 = subgroupH[sl2];
+    int h1_global  = multiply_theorem4(h_global_1, h_global_2, T4);
+    // Convert T4 result (a global G-index) back to a local H-index.
+    int h1 = T3.sR->data[h1_global];
+>>>>>>> 6af4dcabb7a806ea2dd54a14a417d2455c9e6033
 
     // Step 3: flip (T3's outer tables)
     int h2 = T3.flipH->data[cl1 * T3.flipH->cols + h1];
@@ -165,8 +198,15 @@ inline int multiply_combined(int g1, int g2,
     int h3 = T3.crossH->data[r1 * T3.crossH->cols + r2];
     int r3 = T3.crossR->data[r1 * T3.crossR->cols + r2];
 
+<<<<<<< HEAD
     // Step 5: inner multiply h2 * h3 via T4.
     int h4 = multiply_theorem4(h2, h3, T4);
+=======
+    // Step 5 replacement: inner multiply h2 * h3 via T4.
+    int hg2 = subgroupH[h2], hg3 = subgroupH[h3];
+    int h4_global = multiply_theorem4(hg2, hg3, T4);
+    int h4 = T3.sR->data[h4_global];
+>>>>>>> 6af4dcabb7a806ea2dd54a14a417d2455c9e6033
 
     // Step 6: fuse (T3's outer table)
     return T3.fuse->data[h4 * T3.fuse->cols + r3];
@@ -249,6 +289,10 @@ int main(int argc, char* argv[]) {
     // These just point into the blocks map — no data is copied.
     Theorem3Data T3{}; Theorem4Data T4{};
 
+<<<<<<< HEAD
+=======
+    if (mode == 3 || mode == 5) {
+>>>>>>> 6af4dcabb7a806ea2dd54a14a417d2455c9e6033
         // Mode 3: HH_mat is present and read twice per multiply.
         // Mode 5: HH_mat is not written (skipped to keep O(n) space).
         //   multiply_combined never reads T3.HH — T4 handles those steps.
@@ -257,8 +301,13 @@ int main(int argc, char* argv[]) {
                &blocks["flipH_mat"], &blocks["flipR_mat"],
                &blocks["crossH_mat"], &blocks["crossR_mat"],
                &blocks["fuse_mat"], &blocks["inverse"] };
+<<<<<<< HEAD
 
     if (mode == 5) {
+=======
+    }
+    if (mode == 4 || mode == 5) {
+>>>>>>> 6af4dcabb7a806ea2dd54a14a417d2455c9e6033
         // Theorem 4 tables present in Mode 4 and Mode 5.
         T4 = { &blocks["e_arr"], &blocks["sR_arr"], &blocks["sL_arr"],
                &blocks["NN_mat"], &blocks["Flip_mat"],
@@ -269,14 +318,27 @@ int main(int argc, char* argv[]) {
     // In Mode 5 we need the global element list of the inner subgroup H = Gi
     // to convert between local H-indices and global G-indices inside
     // multiply_combined (Steps 2 and 5 of the outer Theorem 3 algorithm).
+<<<<<<< HEAD
+=======
+    vector<int> subgroupH;
+    if (mode == 5)
+        subgroupH = blocks["subgroupH"].data;
+>>>>>>> 6af4dcabb7a806ea2dd54a14a417d2455c9e6033
 
     // ---- Load SLP -----------------------------------------------------------
     int maxLeaf;
     vector<Instruction> ops = load_structure(STRUCTURE_FILE, maxLeaf);
+<<<<<<< HEAD
     std::cout << "Mode          : " << mode       << "\n";
     std::cout << "Instructions  : " << ops.size() << "\n";
     std::cout << "Max leaf value: " << maxLeaf     << "\n";
     std::cout << "Group order   : " << orderG      << "\n";
+=======
+    cout << "Mode          : " << mode       << "\n";
+    cout << "Instructions  : " << ops.size() << "\n";
+    cout << "Max leaf value: " << maxLeaf     << "\n";
+    cout << "Group order   : " << orderG      << "\n";
+>>>>>>> 6af4dcabb7a806ea2dd54a14a417d2455c9e6033
 
     // ---- Warm-up (NOT timed) -----------------------------------------------
     // We run warmup_reps full SLP evaluations before starting the clock.
@@ -295,7 +357,12 @@ int main(int argc, char* argv[]) {
                 } else {
                     int v1 = wvals[op.a], v2 = wvals[op.b];
                     if      (mode == 3) wvals[i] = multiply_theorem3  (v1, v2, T3);
+<<<<<<< HEAD
                     else   wvals[i] = multiply_combined  (v1, v2, T3, T4);
+=======
+                    else if (mode == 4) wvals[i] = multiply_theorem4  (v1, v2, T4);
+                    else                wvals[i] = multiply_combined  (v1, v2, T3, T4, subgroupH);
+>>>>>>> 6af4dcabb7a806ea2dd54a14a417d2455c9e6033
                 }
             }
             wsink = wvals.back();
@@ -323,7 +390,11 @@ int main(int argc, char* argv[]) {
                 int v1 = values[op.a], v2 = values[op.b];
                 if      (mode == 3) values[i] = multiply_theorem3  (v1, v2, T3);
                 else if (mode == 4) values[i] = multiply_theorem4  (v1, v2, T4);
+<<<<<<< HEAD
            else                values[i] = multiply_combined  (v1, v2, T3, T4);
+=======
+                else                values[i] = multiply_combined  (v1, v2, T3, T4, subgroupH);
+>>>>>>> 6af4dcabb7a806ea2dd54a14a417d2455c9e6033
             }
         }
         sink = values.back();
@@ -340,6 +411,7 @@ int main(int argc, char* argv[]) {
         else if (op.type == INV_OP)   num_inv++;
         else if (op.type == MUL_OP)   num_mul++;
     }
+<<<<<<< HEAD
     std:: cout << "\n--- Tree Statistics ---\n";
    std:: cout << "Total nodes      : " << ops.size() << "\n";
     std::cout << "Constants (C)    : " << num_const << " (" << (100.0 * num_const / ops.size()) << "%)\n";
@@ -351,6 +423,19 @@ int main(int argc, char* argv[]) {
     std::cout << "Root value       : " << rootValue << "\n";
     std::cout << "Total time (ms)  : " << duration.count() << "\n";
     std::cout << "Avg per rep (ms) : " << duration.count() / repetitions << "\n";
+=======
+    cout << "\n--- Tree Statistics ---\n";
+    cout << "Total nodes      : " << ops.size() << "\n";
+    cout << "Constants (C)    : " << num_const << " (" << (100.0 * num_const / ops.size()) << "%)\n";
+    cout << "Inversions (I)   : " << num_inv   << " (" << (100.0 * num_inv   / ops.size()) << "%)\n";
+    cout << "Multiplications  : " << num_mul   << " (" << (100.0 * num_mul   / ops.size()) << "%)\n";
+    cout << "C - M            : " << (num_const - num_mul) << " (must be 1 for a valid binary tree)\n";
+
+    cout << "\n--- Results ---\n";
+    cout << "Root value       : " << rootValue << "\n";
+    cout << "Total time (ms)  : " << duration.count() << "\n";
+    cout << "Avg per rep (ms) : " << duration.count() / repetitions << "\n";
+>>>>>>> 6af4dcabb7a806ea2dd54a14a417d2455c9e6033
 
     // ---- Append to CSV -----------------------------------------------------
     // If the file doesn't exist yet, write the header first.
@@ -376,6 +461,10 @@ int main(int argc, char* argv[]) {
         << "," << duration.count() / repetitions
         << "\n";
 
+<<<<<<< HEAD
     std::cout << "\nC++ results written to CSV.\n";
+=======
+    cout << "\nC++ results written to CSV.\n";
+>>>>>>> 6af4dcabb7a806ea2dd54a14a417d2455c9e6033
     return 0;
 }

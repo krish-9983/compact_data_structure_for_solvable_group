@@ -108,7 +108,7 @@ def plot_1a(f1, out_dir, dpi):
     draw_two_lines(
         ax, x, cds, gap,
         xlabel="Group order  n",
-        ylabel="Time per instruction  (ns)",
+        ylabel="Time per operation  (ns)",
         title=f"Fixed L = {fmt_L(L)}  ·  avg over {nsds} random SLPs",
         log_x=True,
     )
@@ -152,7 +152,7 @@ def plot_2a(f2, out_dir, dpi):
     ax.set_xscale("log")
     ax.xaxis.set_major_formatter(mticker.FuncFormatter(lambda v, _: str(int(v))))
     ax.set_xlabel("Group order  n")
-    ax.set_ylabel("Time per instruction  (ns)")
+    ax.set_ylabel("Time per operation  (ns)")
     ax.set_title(
         f"Growing L ({fmt_L(Ls[0])}→{fmt_L(Ls[-1])})  ·  each curve = avg over seeds\n"
         f"light→dark = small→large L  ·  x = group order"
@@ -194,7 +194,7 @@ def plot_3a(f3, out_dir, dpi):
     draw_two_lines(
         ax, x, cds, gap,
         xlabel="Group order  n",
-        ylabel="Grand avg time per instruction  (ns)",
+        ylabel="Grand avg time per operation  (ns)",
         title=f"Grand average  ·  avg over {n_Ls} L sizes ({L_rng}) × {n_s} seeds",
         log_x=True,
     )

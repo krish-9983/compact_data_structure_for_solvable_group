@@ -120,7 +120,6 @@ for expr in groups do
     else
         G := res[2];
         Print( "OK  order=", Size(G),
-               "  DL=", DerivedLength(G),
                "  ", expr, "\n" );
         ok_count := ok_count + 1;
     fi;

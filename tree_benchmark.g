@@ -372,8 +372,10 @@ line := Concatenation(
     timeStr, "\n"
 );
 
-AppendTo(filepath, line);
-<<<<<<< HEAD
+out := OutputTextFile(filepath, true);
+SetPrintFormattingStatus(out, false);
+WriteAll(out, line);
+CloseStream(out);
 
 Print("CSV appended successfully.\n");
 
